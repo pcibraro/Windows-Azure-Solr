@@ -32,19 +32,20 @@ using System.Text;
 using System.Xml;
 using Microsoft.Samples.NetCF;
 using System.Threading;
+using System.Globalization;
 
 namespace SolrAdminWebRole.Controllers
 {
     public class SearchResult
     {
-        public string Url { get; set; }
+        public Uri Url { get; set; }
         public string Title { get; set; }
     }
 
     public class SolrInstanceStatus
     {
         public string InstanceName { get; set; }
-        public string Url { get; set; }
+        public string Endpoint { get; set; }
         public bool IsReady { get; set; }
         public bool IsMaster { get; set; }
         public string IndexVersion { get; set; }
@@ -69,7 +70,7 @@ namespace SolrAdminWebRole.Controllers
         {
             ViewBag.SearchText = "<Enter search term>";
 
-            string solrUrl = HelperLib.Util.GetSolrUrl(false);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(false);
 
             if (solrUrl == null)
             {
@@ -122,12 +123,12 @@ namespace SolrAdminWebRole.Controllers
                 status.IsMaster = false;
             }
 
-            string solrUrl = HelperLib.Util.GetSolrUrl(isMaster, iInstance);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(isMaster, iInstance);
 
             if (solrUrl == null)
                 return status;
 
-            status.Url = solrUrl;
+            status.Endpoint = solrUrl;
 
             try
             {
@@ -190,7 +191,7 @@ namespace SolrAdminWebRole.Controllers
             else
                 ViewBag.SearchText = searchText;
 
-            string solrUrl = HelperLib.Util.GetSolrUrl(false);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(false);
 
             if (solrUrl == null)
             {
@@ -232,7 +233,7 @@ namespace SolrAdminWebRole.Controllers
         [HttpPost]
         public ActionResult ImportWikipediaData(FormCollection forms)
         {
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
                 return Json(false);
@@ -260,7 +261,7 @@ namespace SolrAdminWebRole.Controllers
 
         public ActionResult Import()
         {
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
                 ViewBag.Message = "Import data into Solr Master [Not ready]";
@@ -273,7 +274,7 @@ namespace SolrAdminWebRole.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult UploadFile(HttpPostedFileBase postedFile)
         {
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
             {
@@ -367,7 +368,7 @@ namespace SolrAdminWebRole.Controllers
                 ViewBag.SiteUrl = _crawler.StartingUri;
             }
 
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
             {
@@ -389,7 +390,7 @@ namespace SolrAdminWebRole.Controllers
             else
                 ViewBag.SiteUrl = siteUrl;
 
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
             {
@@ -403,15 +404,15 @@ namespace SolrAdminWebRole.Controllers
             UriBuilder enteredUrl = new UriBuilder(siteUrl);
             _crawler = new Crawler(enteredUrl.Uri.ToString(), true);
             _history = new CrawlerHistory();
-            _crawler.CrawlFinishedEvent += new EventHandler(crawler_CrawlFinishedEvent);
-            _crawler.CurrentPageContentEvent += new Crawler.CurrentPageContentEventHandler(crawler_CurrentPageContentEvent);
+            _crawler.CrawlFinishedEvent += new EventHandler(Crawler_CrawlFinishedEvent);
+            _crawler.CurrentPageContentEvent += new EventHandler<CurrentPageContentEventArgs>(Crawler_CurrentPageContentEvent);
             _crawler.Start();
 
             ViewBag.IsCrawlingInProgess = true;
             return View();
         }
 
-        public void crawler_CurrentPageContentEvent(object sender, CurrentPageContentEventArgs e)
+        private void Crawler_CurrentPageContentEvent(object sender, CurrentPageContentEventArgs e)
         {
             HttpWebRequest webRequest;
             HttpWebResponse webResponse = null;
@@ -421,7 +422,7 @@ namespace SolrAdminWebRole.Controllers
             {
                 _history.Add(e.Url);
 
-                postUrl = String.Format("{0}update/extract?literal.id={1}&prefix=attr_&fmap.content=body&commit=true", HelperLib.Util.GetSolrUrl(true), HttpUtility.UrlEncode(e.Url));
+                postUrl = String.Format(CultureInfo.InvariantCulture, "{0}update/extract?literal.id={1}&prefix=attr_&fmap.content=body&commit=true", HelperLib.Util.GetSolrEndpoint(true), HttpUtility.UrlEncode(e.Url.ToString()));
                 webRequest = (HttpWebRequest)WebRequest.Create(postUrl);
                 webRequest.Method = "POST";
 
@@ -452,7 +453,7 @@ namespace SolrAdminWebRole.Controllers
             //}
         }
 
-        public void crawler_CrawlFinishedEvent(object sender, EventArgs e)
+        private void Crawler_CrawlFinishedEvent(object sender, EventArgs e)
         {
             _crawler = null;
             CommitToSolrIndex();
@@ -465,7 +466,7 @@ namespace SolrAdminWebRole.Controllers
             String postUrl;
             try
             {
-                postUrl = String.Format("{0}update", HelperLib.Util.GetSolrUrl(true));
+                postUrl = String.Format(CultureInfo.InvariantCulture, "{0}update", HelperLib.Util.GetSolrEndpoint(true));
                 webRequest = (HttpWebRequest)WebRequest.Create(postUrl);
                 webRequest.Method = "POST";
 
@@ -490,7 +491,7 @@ namespace SolrAdminWebRole.Controllers
         [HttpPost]
         public ActionResult DeleteAll(FormCollection forms)
         {
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
                 return Json(false);
@@ -513,7 +514,7 @@ namespace SolrAdminWebRole.Controllers
         [HttpPost]
         public ActionResult EnableRepl(FormCollection forms)
         {
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
                 return Json(false);
@@ -526,7 +527,7 @@ namespace SolrAdminWebRole.Controllers
                 int cInstances = HelperLib.Util.GetNumInstances(false);
                 for (int iInstance = 0; iInstance < cInstances; iInstance++)
                 {
-                    solrUrl = HelperLib.Util.GetSolrUrl(false, iInstance);
+                    solrUrl = HelperLib.Util.GetSolrEndpoint(false, iInstance);
                     result = ExecSolrCommand(solrUrl + "replication?command=fetchindex");
                 }
             }
@@ -541,7 +542,7 @@ namespace SolrAdminWebRole.Controllers
         [HttpPost]
         public ActionResult DisableRepl(FormCollection forms)
         {
-            string solrUrl = HelperLib.Util.GetSolrUrl(true);
+            string solrUrl = HelperLib.Util.GetSolrEndpoint(true);
 
             if (solrUrl == null)
                 return Json(false);
@@ -591,7 +592,7 @@ namespace SolrAdminWebRole.Controllers
 
                 // crawler data uses url as the id. Wikipedia uses a numeric id, and we have to consturct a url from the revision id and the title text.
                 if (Uri.TryCreate(node.InnerText, UriKind.Absolute, out uri))
-                    result.Url = uri.ToString();
+                    result.Url = uri;
                 else if (int.TryParse(node.InnerText, out id))
                 {
                     node = resultDoc.SelectSingleNode("*[@name='revision']");
@@ -600,7 +601,7 @@ namespace SolrAdminWebRole.Controllers
 
                     string revisionId = node.InnerText;
                     string titleText = result.Title.Replace(' ', '_');
-                    result.Url = string.Format("http://en.wikipedia.org/w/index.php?title={0}&oldid={1}", titleText, revisionId);
+                    result.Url = new Uri(string.Format(CultureInfo.InvariantCulture, "http://en.wikipedia.org/w/index.php?title={0}&oldid={1}", titleText, revisionId));
                 }
 
                 results.Add(result);

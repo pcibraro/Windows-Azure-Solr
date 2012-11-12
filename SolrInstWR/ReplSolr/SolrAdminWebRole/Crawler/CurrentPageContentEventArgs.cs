@@ -28,9 +28,9 @@ using Microsoft.Samples.NetCF;
 
 namespace SolrAdminWebRole
 {
-    public class CurrentPageContentEventArgs
+    public class CurrentPageContentEventArgs : EventArgs
     {
-        public string Url { get; set; }
+        public Uri Url { get; set; }
         public string Content { get; set; }
     }
 }

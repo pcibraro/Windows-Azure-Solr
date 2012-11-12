@@ -33,17 +33,18 @@ using Microsoft.WindowsAzure.StorageClient;
 using System.IO;
 using System.Xml.Linq;
 using System.Xml;
+using System.Globalization;
 
 namespace SolrSlaveHostWorkerRole
 {
     public class WorkerRole : RoleEntryPoint
     {
-        private static CloudDrive _solrStorageDrive = null;
+        private static CloudDrive _solrStorageDrive;
         private static String _logFileLocation;
-        private static Process _solrProcess = null;
+        private static Process _solrProcess;
         private static string _port = null;
-        private static string _masterUrl = null;
-        private static string _mySolrUrl = null;
+        private static string _masterUrl;
+        private static string _mySolrUrl;
 
         public override void Run()
         {
@@ -53,7 +54,7 @@ namespace SolrSlaveHostWorkerRole
             {
                 Thread.Sleep(10000);
 
-                string masterUrl = HelperLib.Util.GetMasterUrl();
+                string masterUrl = HelperLib.Util.GetMasterEndpoint();
                 if (masterUrl != _masterUrl) // master changed?
                 {
                     Log("Master Url changed, recycling slave role", "Information");
@@ -141,10 +142,10 @@ namespace SolrSlaveHostWorkerRole
                 string cmdLineFormat = 
                     @"%RoleRoot%\approot\jre6\bin\java.exe -Dsolr.solr.home={0}SolrStorage -Djetty.port={1} -Denable.slave=true -DmasterUrl={2} -DdefaultCoreName=slaveCore -jar %RoleRoot%\approot\Solr\example\start.jar";
 
-                _masterUrl = HelperLib.Util.GetMasterUrl();
+                _masterUrl = HelperLib.Util.GetMasterEndpoint();
                 Log("GetMasterUrl: " + _masterUrl, "Information");
 
-                string cmdLine = String.Format(cmdLineFormat, vhdPath, _port, _masterUrl + "replication");
+                string cmdLine = String.Format(CultureInfo.InvariantCulture, cmdLineFormat, vhdPath, _port, _masterUrl + "replication");
                 Log("Solr start command line: " + cmdLine, "Information");
 
                 _solrProcess = ExecuteShellCommand(cmdLine, false, Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", @"approot\Solr\example\"));
@@ -164,7 +165,7 @@ namespace SolrSlaveHostWorkerRole
             RoleEnvironment.RequestRecycle();
         }
 
-        private String CreateSolrStorageVhd()
+        private static String CreateSolrStorageVhd()
         {
             CloudStorageAccount storageAccount;
             LocalResource localCache;
@@ -172,7 +173,7 @@ namespace SolrSlaveHostWorkerRole
             CloudBlobContainer drives;
 
             localCache = RoleEnvironment.GetLocalResource("AzureDriveCache");
-            Log(String.Format("AzureDriveCache {0} {1} MB", localCache.RootPath, localCache.MaximumSizeInMegabytes - 50), "Information");
+            Log(String.Format(CultureInfo.InvariantCulture, "AzureDriveCache {0} {1} MB", localCache.RootPath, localCache.MaximumSizeInMegabytes - 50), "Information");
             CloudDrive.InitializeCache(localCache.RootPath.TrimEnd('\\'), localCache.MaximumSizeInMegabytes - 50);
 
             storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("DataConnectionString"));
@@ -183,20 +184,20 @@ namespace SolrSlaveHostWorkerRole
             drives = client.GetContainerReference(containerAddress);
 
             try { drives.CreateIfNotExist(); }
-            catch { };
+            catch (StorageClientException) { };
 
             var vhdUrl = client.GetContainerReference(containerAddress).GetBlobReference("SolrStorage.vhd").Uri.ToString();
-            Log(String.Format("SolrStorage.vhd {0}", vhdUrl), "Information");
+            Log(String.Format(CultureInfo.InvariantCulture, "SolrStorage.vhd {0}", vhdUrl), "Information");
             _solrStorageDrive = storageAccount.CreateCloudDrive(vhdUrl);
 
-            int cloudDriveSizeInMB = int.Parse(RoleEnvironment.GetConfigurationSettingValue("CloudDriveSize"));
+            int cloudDriveSizeInMB = int.Parse(RoleEnvironment.GetConfigurationSettingValue("CloudDriveSize"), CultureInfo.InvariantCulture);
             try { _solrStorageDrive.Create(cloudDriveSizeInMB); }
             catch (CloudDriveException) { }
 
-            Log(String.Format("CloudDriveSize {0} MB", cloudDriveSizeInMB), "Information");
+            Log(String.Format(CultureInfo.InvariantCulture, "CloudDriveSize {0} MB", cloudDriveSizeInMB), "Information");
 
             var dataPath = _solrStorageDrive.Mount(localCache.MaximumSizeInMegabytes - 50, DriveMountOptions.Force);
-            Log(String.Format("Mounted as {0}", dataPath), "Information");
+            Log(String.Format(CultureInfo.InvariantCulture, "Mounted as {0}", dataPath), "Information");
 
             return dataPath;
         }
@@ -204,10 +205,10 @@ namespace SolrSlaveHostWorkerRole
         // follow container naming conventions to generate a unique container name
         private static string ContainerNameFromRoleId(string roleId)
         {
-            return roleId.Replace('(', '-').Replace(").", "-").Replace('.', '-').Replace('_', '-').ToLower();
+            return roleId.Replace('(', '-').Replace(").", "-").Replace('.', '-').Replace('_', '-').ToLowerInvariant();
         }
 
-        private void CreateSolrStoragerDirs(String vhdPath)
+        private static void CreateSolrStoragerDirs(String vhdPath)
         {
             String solrStorageDir, solrConfDir, solrDataDir, solrLibDir;
 
@@ -234,7 +235,7 @@ namespace SolrSlaveHostWorkerRole
             }
         }
 
-        private void InitializeLogFile(string vhdPath)
+        private static void InitializeLogFile(string vhdPath)
         {
             String logFileName;
             String logFileDirectoryLocation;
@@ -245,7 +246,7 @@ namespace SolrSlaveHostWorkerRole
                 Directory.CreateDirectory(logFileDirectoryLocation);
             }
 
-            logFileName = String.Format("Log_{0}.txt", DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss"));
+            logFileName = String.Format(CultureInfo.InvariantCulture, "Log_{0}.txt", DateTime.Now.ToString("MM_dd_yyyy_HH_mm_ss", CultureInfo.InvariantCulture));
             using (FileStream logFileStream = File.Create(Path.Combine(logFileDirectoryLocation, logFileName)))
             {
                 _logFileLocation = Path.Combine(logFileDirectoryLocation, logFileName);
@@ -285,10 +286,10 @@ namespace SolrSlaveHostWorkerRole
         {
             String libDir = Path.Combine(solrStorage, "lib");
             String sourceExtractionFilesDir = Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", @"approot\Solr\contrib\extraction\lib");
-            ExecuteShellCommand(String.Format("XCOPY \"{0}\" \"{1}\"  /E /Y", sourceExtractionFilesDir, libDir), true);
+            ExecuteShellCommand(String.Format(CultureInfo.InvariantCulture, "XCOPY \"{0}\" \"{1}\"  /E /Y", sourceExtractionFilesDir, libDir), true);
         }
 
-        private void CopyLibFiles(String solrStorage)
+        private static void CopyLibFiles(String solrStorage)
         {
             String libFileName, libFileLocation;
             IEnumerable<String> libFiles;
@@ -303,11 +304,11 @@ namespace SolrSlaveHostWorkerRole
         }
 
         // figure out and set port, master / slave, master Url etc.
-        private void InitRoleInfo()
+        private static void InitRoleInfo()
         {
             IPEndPoint endpoint = RoleEnvironment.CurrentRoleInstance.InstanceEndpoints["SolrSlaveEndpoint"].IPEndpoint;
-            _port = endpoint.Port.ToString();
-            _mySolrUrl = string.Format("http://{0}/solr/", endpoint);
+            _port = endpoint.Port.ToString(CultureInfo.InvariantCulture);
+            _mySolrUrl = string.Format(CultureInfo.InvariantCulture, "http://{0}/solr/", endpoint);
 
             HelperLib.Util.AddRoleInfoEntry(RoleEnvironment.CurrentRoleInstance.Id, endpoint.Address.ToString(), endpoint.Port, false);
 
@@ -359,7 +360,7 @@ namespace SolrSlaveHostWorkerRole
             Log(e.Data, "Message");
         }
 
-        private void InitDiagnostics()
+        private static void InitDiagnostics()
         {
 #if DEBUG
             // Get the default initial configuration for DiagnosticMonitor.
@@ -379,7 +380,7 @@ namespace SolrSlaveHostWorkerRole
 #endif
         }
 
-        private void Log(string message, string category)
+        private static void Log(string message, string category)
         {
 #if DEBUG
             message = RoleEnvironment.CurrentRoleInstance.Id + "=> " + message;

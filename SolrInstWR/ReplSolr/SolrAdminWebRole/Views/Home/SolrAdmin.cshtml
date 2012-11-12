@@ -7,7 +7,7 @@
     @foreach (SolrAdminWebRole.Controllers.SolrInstanceStatus status in ViewBag.Statuses)
     {
         <p>
-            <b>@status.InstanceName [@status.Url]: </b>
+            <b>@status.InstanceName [@status.Endpoint]: </b>
             @if (status.IsReady)
             { <text>Ready</text> }
             else

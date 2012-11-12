@@ -34,6 +34,9 @@ using SolrAdminWebRole;
 
 namespace Microsoft.Samples.NetCF
 {
+    //public delegate void EventHandler< CurrentPageEventHandler(object sender, CurrentPageEventArgs e);
+    //public delegate void CurrentPageContentEventHandler(object sender, CurrentPageContentEventArgs e);
+
     /// <summary>
     /// The worker class
     /// </summary>
@@ -59,20 +62,18 @@ namespace Microsoft.Samples.NetCF
         /// <summary>
         /// Event(s)
         /// </summary>
-        public delegate void CurrentPageEventHandler(object sender,
-                                                    CurrentPageEventArgs e);
-        public delegate void CurrentPageContentEventHandler(object sender, CurrentPageContentEventArgs e);
         
-        public event CurrentPageEventHandler CurrentPageEvent;
-        public event CurrentPageContentEventHandler CurrentPageContentEvent;
+        
+        public event EventHandler<CurrentPageEventArgs> CurrentPageEvent;
+        public event EventHandler<CurrentPageContentEventArgs> CurrentPageContentEvent;
         public event EventHandler PageFoundEvent;
         public event EventHandler CrawlFinishedEvent;
 
-        public String StartingUri 
+        public Uri StartingUri 
         {
             get
             {
-                return startingPage;
+                return startingPageUri;
             }
         }
 
@@ -133,7 +134,7 @@ namespace Microsoft.Samples.NetCF
         {
             HttpWebResponse resp = null;
             bool isHtml = false;
-            const string TypeHTML = "text/html";
+            const string TypeHTML = "TEXT/HTML";
 
             status = (HttpStatusCode)(-2);  // not html
 
@@ -161,9 +162,8 @@ namespace Microsoft.Samples.NetCF
                 string contentType = headers["Content-type"];
                 if (contentType != null)
                 {
-                    contentType = contentType.ToLower(
-                                            CultureInfo.InvariantCulture);
-                    if (contentType.StartsWith(TypeHTML))
+                    contentType = contentType.ToUpperInvariant();
+                    if (contentType.StartsWith(TypeHTML, StringComparison.OrdinalIgnoreCase))
                     {
                         isHtml = true;
                     }
@@ -420,7 +420,7 @@ namespace Microsoft.Samples.NetCF
                 links = new Hashtable(StringComparer.InvariantCultureIgnoreCase);
 
                 // make sure the starting page has a scheme
-                if (-1 == this.startingPage.IndexOf("://"))
+                if (-1 == this.startingPage.IndexOf("://", StringComparison.OrdinalIgnoreCase))
                 {
                     // add http to the page link
                     this.startingPage = string.Format(CultureInfo.InvariantCulture, 
@@ -472,7 +472,7 @@ namespace Microsoft.Samples.NetCF
                                 string pageData = "";
                                 currentStatus = GetPageData(ref pageUri,
                                                         out pageData);
-                                CurrentPageContentEvent(this, new CurrentPageContentEventArgs() { Url = page, Content = pageData });
+                                CurrentPageContentEvent(this, new CurrentPageContentEventArgs() { Url = new Uri(page), Content = pageData });
                                 // if we successfully retrieved the page data
                                 if (HttpStatusCode.OK == currentStatus)
                                 {

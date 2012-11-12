@@ -28,24 +28,27 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Runtime.Serialization;
+using System.Globalization;
+using System.Security.Permissions;
 
 namespace HelperLib
 {
-    public class Util
+    public static class Util
     {
-        public static void AddRoleInfoEntry(string roleId, string ipString, int port, bool isMaster)
+        public static void AddRoleInfoEntry(string roleId, string ip, int port, bool isMaster)
         {
             RoleInfoDataSource rids = new RoleInfoDataSource();
-            rids.AddRoleInfoEntity(new RoleInfoEntity() { RoleId = roleId, IPString = ipString, Port = port, IsSolrMaster = isMaster });
+            rids.AddRoleInfoEntity(new RoleInfoEntity() { RoleId = roleId, IPString = ip, Port = port, IsSolrMaster = isMaster });
         }
 
-        public static string GetMasterUrl()
+        public static string GetMasterEndpoint()
         {
             int numTries = 100;
 
             while (--numTries > 0) // try multiple times since master may be initializing
             {
-                string masterUrl = GetSolrUrl(true, -1);
+                string masterUrl = GetSolrEndpoint(true, -1);
                 if (masterUrl == null)
                 {
                     Thread.Sleep(10000);
@@ -55,22 +58,22 @@ namespace HelperLib
                 return masterUrl;
             }
 
-            throw new ApplicationException("Solr master not reachable.");
+            throw new OperationFailedException("Solr master not reachable.") { OperationName = "GetMasterUrl" };
         }
 
         // returns null if the url could not be obtained for any reason (such as the role was not available)
-        public static string GetSolrUrl(bool bMaster, int iInstance = -1)
+        public static string GetSolrEndpoint(bool bMaster, int iInstance = -1)
         {
             string url = null;
 
             try
             {
                 // Worker role access:
-                IPEndPoint endpoint = GetSolrEndpoint(bMaster, iInstance);
+                IPEndPoint endpoint = GetSolrEndpointInfo(bMaster, iInstance);
                 if (endpoint == null)
                     return null;
 
-                url = string.Format("http://{0}/solr/", endpoint);
+                url = string.Format(CultureInfo.InvariantCulture, "http://{0}/solr/", endpoint);
             }
             catch { }
 
@@ -83,7 +86,7 @@ namespace HelperLib
         /// Specify bMaster = true to get master instance, false to get slave instance.
         /// Specify iInstance = -1 to get the endpoint of any instance of that type that may be actively listening.
         /// </summary>
-        private static IPEndPoint GetSolrEndpoint(bool bMaster, int iInstance)
+        private static IPEndPoint GetSolrEndpointInfo(bool bMaster, int iInstance)
         {
             var roleInstances = RoleEnvironment.Roles[bMaster ? "SolrMasterHostWorkerRole" : "SolrSlaveHostWorkerRole"].Instances;
             IPEndPoint solrEndpoint = null;
@@ -97,7 +100,7 @@ namespace HelperLib
                     solrEndpoint = GetEndpoint(instance, bMaster);
                     if (solrEndpoint == null)
                         continue;
-                    
+
                     break;
                 }
             }
@@ -157,5 +160,43 @@ namespace HelperLib
 
             return valid;
         }
+    }
+
+    [Serializable]
+    public class OperationFailedException : Exception
+    {
+        public OperationFailedException()
+        {
+        }
+
+        public OperationFailedException(string message)
+            : base(message)
+        {
+        }
+
+        public OperationFailedException(string message, Exception innerException) :
+            base(message, innerException)
+        {
+        }
+
+        protected OperationFailedException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            if (info != null)
+            {
+                this.OperationName = info.GetString("OperationName");
+            }
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            if (info != null)
+            {
+                info.AddValue("OperationName", this.OperationName);
+            }
+        }
+
+        public string OperationName { get; set; }
     }
 }

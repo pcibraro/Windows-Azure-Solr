@@ -29,14 +29,15 @@ namespace HelperLib
     using Microsoft.WindowsAzure.StorageClient;
     using Microsoft.WindowsAzure.ServiceRuntime;
     using System.Net;
+    using System.Globalization;
 
-    public class RoleInfoEntity : TableServiceEntity
+    public sealed class RoleInfoEntity : TableServiceEntity
     {
         private const string partitionKey = "RoleEndPoints";
         public RoleInfoEntity()
         {
             this.PartitionKey = partitionKey;
-            RowKey = string.Format("{0:10}_{1}", DateTime.MaxValue.Ticks - DateTime.Now.Ticks, Guid.NewGuid());
+            RowKey = string.Format(CultureInfo.InvariantCulture, "{0:10}_{1}", DateTime.MaxValue.Ticks - DateTime.Now.Ticks, Guid.NewGuid());
         }
 
         // Define the properties that Role information.

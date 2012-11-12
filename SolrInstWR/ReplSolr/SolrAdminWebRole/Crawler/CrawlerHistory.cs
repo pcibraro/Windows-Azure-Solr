@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Collections.ObjectModel;
 
 namespace SolrAdminWebRole
 {
@@ -36,9 +37,9 @@ namespace SolrAdminWebRole
             _crawledUrls = new List<string>();
         }
 
-        public void Add(String url)
+        public void Add(Uri url)
         {
-            _crawledUrls.Add(url);
+            _crawledUrls.Add(url.ToString());
         }
 
         public int UrlCount
@@ -49,7 +50,7 @@ namespace SolrAdminWebRole
             }
         }
 
-        public List<String> Get(int rootIndex)
+        public IEnumerable<String> Get(int rootIndex)
         {
             if (_crawledUrls.Count < rootIndex) 
             {

@@ -26,12 +26,12 @@ You are responsible for and must locate and read the license terms for each of t
 ## Copy the binaries
 1. Download and extract on your local computer the latest version SolrInstWRMMDDYYYY.zip (for example SolrInstWR06072012.zip) from https://github.com/MSOpenTech/Windows-Azure-Solr/downloads.
 
-2. Please make sure that you unblock all the dll’s and config files using instructions at http://msdn.microsoft.com/en-us/library/ee890038(VS.100).aspx. 
+2. Please make sure that you unblock all the dllï¿½s and config files using instructions at http://msdn.microsoft.com/en-us/library/ee890038(VS.100).aspx. 
 
 3. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
 
 ## Run the installer:
-    - Inst4WA.exe -XmlConfigPath <yourpath>/SolrInstWR.xml -DomainName <youruniquename>  -Subscription <yoursubscription>
+    - Inst4WA.exe -XmlConfigPath <yourpath>/SolrInstWR.xml -DomainName <youruniquename> -Subscription <yoursubscription> -Location <datacenterlocation>
 
 
 Note: While the installer is running, it will open a browser to download your publish settings file. Save this file to either your downloads folder or the SolrInstaller folder. You must save the file in one of those two locations for the installer to see it and import the settings.

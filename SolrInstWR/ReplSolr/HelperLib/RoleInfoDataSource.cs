@@ -66,7 +66,7 @@ namespace HelperLib
             this.context.SaveChanges();
         }
 
-        public void UpdateRoleInfoEntity(string rowId, string RoleId, string endpoint, bool isSolrMaster)
+        public void UpdateRoleInfoEntity(string rowId, string roleId, string endpoint, bool isSolrMaster)
         {
             var results = from r in this.context.RoleInfoEntity
                                  where r.RowKey == rowId
@@ -74,7 +74,7 @@ namespace HelperLib
 
             var roleInfoEntity = results.FirstOrDefault<RoleInfoEntity>();
 
-            roleInfoEntity.RoleId = RoleId;
+            roleInfoEntity.RoleId = roleId;
             roleInfoEntity.IPString = endpoint;
             roleInfoEntity.IsSolrMaster = isSolrMaster;
 
@@ -112,8 +112,7 @@ namespace HelperLib
 
         private static IPEndPoint IPEndpointFromParts(string ipString, int port)
         {
-            IPAddress address;
-            IPAddress.TryParse(ipString, out address);
+            IPAddress address = IPAddress.Parse(ipString);
             IPEndPoint endpoint = new IPEndPoint(address, port);
             return endpoint;
         }

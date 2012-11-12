@@ -40,8 +40,8 @@
         @foreach (SolrAdminWebRole.Controllers.SearchResult result in ViewBag.SearchResults)
         {
             <li>
-                <div><b><a href="@result.Url" target="_blank">@result.Title</a></div>
-                <div>@result.Url</div>
+                <div><b><a href="@result.Url.ToString()" target="_blank">@result.Title</a></div>
+                <div>@result.Url.ToString()</div>
             </li>
         }
     </ul>
