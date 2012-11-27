@@ -28,9 +28,11 @@ You are responsible for and must locate and read the license terms for each of t
 
 2. Please make sure that you unblock all the dll's and config files using instructions at http://msdn.microsoft.com/en-us/library/ee890038(VS.100).aspx. 
 
-3. Replace the Azure.publishSettings file in the folder where you unzipped the package with your own publishSettings file (containing details of your Azure subscription).
+3. Download the publishSettings file for your Azure subscription. You can either run the Get-AzurePublishSettingsFile in a powershell window, or visit this link: https://windows.azure.com/download/publishprofile.aspx
 
-4. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
+4. Replace the Azure.publishSettings file in the folder where you unzipped the package with your own publishSettings file. Alternatively, you can simply delete the Azure.publishsettings file in the folder where you unzipped the package and run the installer. This will launch the browser asking you to download the publishsettings file.
+
+5. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
 
 ## Run the installer:
     - Inst4WA.exe -XmlConfigPath "<yourpath>/SolrInstWR.xml" -DomainName "<youruniquename>" -Subscription "<yoursubscriptionname>" -Location "<datacenterlocation>"
