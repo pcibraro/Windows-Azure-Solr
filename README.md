@@ -33,7 +33,7 @@ You are responsible for and must locate and read the license terms for each of t
 4. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
 
 ## Run the installer:
-    - Inst4WA.exe -XmlConfigPath "\<yourpath\>/SolrInstWR.xml" -DomainName "\<youruniquename\>" -Subscription "\<yoursubscriptionname\>" -Location "\<datacenterlocation\>"
+    - Inst4WA.exe -XmlConfigPath "<yourpath>/SolrInstWR.xml" -DomainName "<youruniquename>" -Subscription "<yoursubscriptionname>" -Location "<datacenterlocation>"
 
 ## Administering Solr/Lucene
 
