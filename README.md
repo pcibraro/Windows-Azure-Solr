@@ -21,21 +21,19 @@ You are responsible for and must locate and read the license terms for each of t
    
 4. Download JRE for Windows 64-bit which is owned by Sun Microsystems, Inc., from http://www.java.com/en/download/manual.jsp  . You are responsible for reading and accepting the license terms.
 
-5. Note if you start with a clean machine:  To download public setting file the enhanced security configuration of IE needs to be disabled. Go to Server Manager -> configure IE ESC -> disable for Administrators.
+5. Note if you start with a clean machine:  To download your publishSettings file, the enhanced security configuration of IE needs to be disabled. Go to Server Manager -> configure IE ESC -> disable for Administrators.
 
 ## Copy the binaries
 1. Download and extract on your local computer the latest version SolrInstWRMMDDYYYY.zip (for example SolrInstWR06072012.zip) from https://github.com/MSOpenTech/Windows-Azure-Solr/downloads.
 
 2. Please make sure that you unblock all the dll's and config files using instructions at http://msdn.microsoft.com/en-us/library/ee890038(VS.100).aspx. 
 
-3. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
+3. Replace the Azure.publishSettings file in the folder where you unzipped the package with your own publishSettings file (containing details of your Azure subscription).
+
+4. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
 
 ## Run the installer:
-    - Inst4WA.exe -XmlConfigPath <yourpath>/SolrInstWR.xml -DomainName <youruniquename> -Subscription <yoursubscription> -Location <datacenterlocation>
-
-
-Note: While the installer is running, it will open a browser to download your publish settings file. Save this file to either your downloads folder or the SolrInstaller folder. You must save the file in one of those two locations for the installer to see it and import the settings.
-Do not write your publish settings over an existing file. The installer will be watching these two locations for a new file to be created.
+    - Inst4WA.exe -XmlConfigPath "\<yourpath\>/SolrInstWR.xml" -DomainName "\<youruniquename\>" -Subscription "\<yoursubscriptionname\>" -Location "\<datacenterlocation\>"
 
 ## Administering Solr/Lucene
 
