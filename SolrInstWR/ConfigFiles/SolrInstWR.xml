@@ -44,6 +44,8 @@
     <Parameter Name="PublishSettingsFilePath" Value="Azure.publishsettings"></Parameter>
     <Parameter Name="AzureNodeJsSdkPath" Value="%%Program Files%%\Microsoft SDKs\Windows Azure\PowerShell\Azure"></Parameter>
     <Parameter Name="ErrorActionValue" Value="Stop"></Parameter>
+
+    <Parameter Name="UploadTimeoutInSeconds" Value="3600"></Parameter>
   </Parameters>
   <Steps>
 
@@ -139,6 +141,7 @@
       <CommandParam Name="Slot" ParameterName="DeploymentOption" />
       <CommandParam Name="Location" ParameterName="Location" />
       <CommandParam Name="Subscription" ParameterName="Subscription" />
+      <CommandParam Name="TimeoutSeconds" ParameterName="UploadTimeoutInSeconds"/>
     </Step>
     <Step Type="Cmdlet" Command="Ping-ServiceEndpoints" Message="Verifying the Endpoints.">
       <CommandParam Name="PublishSettingsFile" ParameterName="PublishSettingsFilePath" />
