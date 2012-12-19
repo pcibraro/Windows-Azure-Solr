@@ -24,7 +24,7 @@ You are responsible for and must locate and read the license terms for each of t
 5. Note if you start with a clean machine:  To download your publishSettings file, the enhanced security configuration of IE needs to be disabled. Go to Server Manager -> configure IE ESC -> disable for Administrators.
 
 ## Copy the binaries
-1. Download and extract on your local computer the latest version SolrInstWRMMDDYYYY.zip (for example SolrInstWR06072012.zip) from https://github.com/MSOpenTech/Windows-Azure-Solr/downloads.
+1. Download and extract on your local computer the latest version from http://msopentechstorage.blob.core.windows.net/windows-azure-solr/SolrInstWR-12182012.zip.
 
 2. Please make sure that you unblock all the dll's and config files using instructions at http://msdn.microsoft.com/en-us/library/ee890038(VS.100).aspx. 
 
@@ -36,6 +36,8 @@ You are responsible for and must locate and read the license terms for each of t
 
 ## Run the installer:
     - Inst4WA.exe -XmlConfigPath "<yourpath>/SolrInstWR.xml" -DomainName "<youruniquename>" -Subscription "<yoursubscriptionname>" -Location "<datacenterlocation>"
+
+6. Note that we currently support Solr 3.x as well as 4.x. The names of the SolrInstWR.xml files indicate the Solr version that will be installed using that config file.
 
 ## Administering Solr/Lucene
 
