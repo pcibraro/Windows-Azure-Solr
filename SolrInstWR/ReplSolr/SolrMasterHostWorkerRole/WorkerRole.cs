@@ -34,6 +34,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Xml;
 using System.Globalization;
+using HelperLib;
 
 namespace SolrMasterHostWorkerRole
 {
@@ -44,6 +45,7 @@ namespace SolrMasterHostWorkerRole
         private static Process _solrProcess;
         private static string _port;
         private static string _mySolrUrl;
+        private static SolrFileLocations _fileLocationResolver;
 
         public override void Run()
         {
@@ -75,6 +77,7 @@ namespace SolrMasterHostWorkerRole
                 RoleEnvironment.RequestRecycle();
             };
 
+            _fileLocationResolver = new SolrFileLocations(RoleEnvironment.GetConfigurationSettingValue("SolrMajorVersion"));
             InitDiagnostics();
             StartSolr();
 
@@ -173,8 +176,9 @@ namespace SolrMasterHostWorkerRole
             try { drives.CreateIfNotExist(); }
             catch (StorageClientException) { };
 
-            var vhdUrl = client.GetContainerReference(containerAddress).GetBlobReference("SolrStorage.vhd").Uri.ToString();
-            Log(String.Format(CultureInfo.InvariantCulture, "SolrStorage.vhd {0}", vhdUrl), "Information");
+            string vhdName = string.Format(CultureInfo.InvariantCulture, "SolrStorage_{0}.vhd", RoleEnvironment.GetConfigurationSettingValue("SolrMajorVersion"));
+            var vhdUrl = client.GetContainerReference(containerAddress).GetBlobReference(vhdName).Uri.ToString();
+            Log(String.Format(CultureInfo.InvariantCulture, "{0} {1}", vhdName,vhdUrl), "Information");
             _solrStorageDrive = storageAccount.CreateCloudDrive(vhdUrl);
 
             int cloudDriveSizeInMB = int.Parse(RoleEnvironment.GetConfigurationSettingValue("CloudDriveSize"), CultureInfo.InvariantCulture);
@@ -197,28 +201,22 @@ namespace SolrMasterHostWorkerRole
 
         private static void CreateSolrStoragerDirs(String vhdPath)
         {
-            String solrStorageDir, solrConfDir, solrDataDir, solrLibDir;
+            String solrStorageDir = Path.Combine(vhdPath, "SolrStorage");
+            string[] directoriesToCreate = new string[] 
+            {
+                solrStorageDir,
+                Path.Combine(solrStorageDir, _fileLocationResolver.VhdLangDir),
+                Path.Combine(solrStorageDir, _fileLocationResolver.VhdConfDir),
+                Path.Combine(solrStorageDir, "data"),
+                Path.Combine(solrStorageDir, "lib")
+            };
 
-            solrStorageDir = Path.Combine(vhdPath, "SolrStorage");
-            solrConfDir = Path.Combine(solrStorageDir, "conf");
-            solrDataDir = Path.Combine(solrStorageDir, "data");
-            solrLibDir = Path.Combine(solrStorageDir, "lib");
-
-            if (Directory.Exists(solrStorageDir) == false)
+            foreach (string eachDir in directoriesToCreate)
             {
-                Directory.CreateDirectory(solrStorageDir);
-            }
-            if (Directory.Exists(solrConfDir) == false)
-            {
-                Directory.CreateDirectory(solrConfDir);
-            }
-            if (Directory.Exists(solrDataDir) == false)
-            {
-                Directory.CreateDirectory(solrDataDir);
-            }
-            if (Directory.Exists(solrLibDir) == false)
-            {
-                Directory.CreateDirectory(solrLibDir);
+                if (Directory.Exists(eachDir) == false)
+                {
+                    Directory.CreateDirectory(eachDir);
+                }
             }
         }
 
@@ -243,27 +241,27 @@ namespace SolrMasterHostWorkerRole
         private void CopySolrFiles(String vhdPath)
         {
             // Copy solr conf files.
-            IEnumerable<String> confFiles = Directory.EnumerateFiles(Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", @"approot\Solr\example\solr\conf"));
+            IEnumerable<String> confFiles = Directory.EnumerateFiles(Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", _fileLocationResolver.SolrConfDir));
             foreach (String sourceFile in confFiles)
             {
                 String confFileName = System.IO.Path.GetFileName(sourceFile);
-                File.Copy(sourceFile, Path.Combine(vhdPath, "SolrStorage", "conf", confFileName), true);
+                File.Copy(sourceFile, Path.Combine(vhdPath, "SolrStorage", _fileLocationResolver.VhdConfDir, confFileName), true);
             }
 
             // Copy lang Directory.
-            IEnumerable<String> langFiles = Directory.EnumerateFiles(Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", @"approot\Solr\example\solr\conf\lang"));
+            IEnumerable<String> langFiles = Directory.EnumerateFiles(Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", _fileLocationResolver.SolrLangDir));
             foreach (String sourceFile in langFiles)
             {
                 String confFileName = System.IO.Path.GetFileName(sourceFile);
-                File.Copy(sourceFile, Path.Combine(vhdPath, "SolrStorage", @"conf", confFileName), true);
+                File.Copy(sourceFile, Path.Combine(vhdPath, "SolrStorage", _fileLocationResolver.VhdLangDir, confFileName), true);
             }
 
             // Overwrite original versions of SOLR files.
             string modifiedSolrFileSrc = Path.Combine(Environment.GetEnvironmentVariable("RoleRoot") + @"\", @"approot\SolrFiles\");
-            string modifiedSolrFileDestination = Path.Combine(vhdPath, "SolrStorage", "conf");
+            string modifiedSolrFileDestination = Path.Combine(vhdPath, "SolrStorage", _fileLocationResolver.VhdConfDir);
             File.Copy(Path.Combine(modifiedSolrFileSrc, "data-config.xml"), Path.Combine(modifiedSolrFileDestination, "data-config.xml"), true);
-            File.Copy(Path.Combine(modifiedSolrFileSrc, "schema.xml"), Path.Combine(modifiedSolrFileDestination, "schema.xml"), true);
-            File.Copy(Path.Combine(modifiedSolrFileSrc, "solrconfig.xml"), Path.Combine(modifiedSolrFileDestination, "solrconfig.xml"), true);
+            File.Copy(Path.Combine(modifiedSolrFileSrc, _fileLocationResolver.SchemaXml), Path.Combine(modifiedSolrFileDestination, "schema.xml"), true);
+            File.Copy(Path.Combine(modifiedSolrFileSrc, _fileLocationResolver.ConfigXml), Path.Combine(modifiedSolrFileDestination, "solrconfig.xml"), true);
 
             CopyLibFiles(Path.Combine(vhdPath, "SolrStorage"));
             CopyExtractionFiles(Path.Combine(vhdPath, "SolrStorage"));

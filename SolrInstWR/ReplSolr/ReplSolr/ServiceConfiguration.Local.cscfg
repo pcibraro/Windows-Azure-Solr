@@ -7,7 +7,8 @@
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" value="20000" />
       <Setting name="DataConnectionString" value="UseDevelopmentStorage=true" />
     </ConfigurationSettings>
-    <Certificates></Certificates>
+    <Certificates>
+    </Certificates>
   </Role>
   <Role name="SolrMasterHostWorkerRole">
     <Instances count="1" />
@@ -15,8 +16,10 @@
       <Setting name="DataConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="CloudDriveSize" value="4096" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="SolrMajorVersion" value="4" />
     </ConfigurationSettings>
-    <Certificates></Certificates>
+    <Certificates>
+    </Certificates>
   </Role>
   <Role name="SolrSlaveHostWorkerRole">
     <Instances count="2" />
@@ -25,7 +28,9 @@
       <Setting name="CloudDriveSize" value="4096" />
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" value="21000" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="SolrMajorVersion" value="4" />
     </ConfigurationSettings>
-    <Certificates></Certificates>
+    <Certificates>
+    </Certificates>
   </Role>
 </ServiceConfiguration>

@@ -1,1 +1,7 @@
 \obj\
+\Controllers\
+\Crawler\
+\Properties\
+Global.asax.cs
+WebRole.cs
+.csproj

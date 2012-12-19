@@ -21,8 +21,10 @@
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
     </Endpoints>
-    <Imports></Imports>
-    <Certificates></Certificates>
+    <Imports>
+    </Imports>
+    <Certificates>
+    </Certificates>
     <ConfigurationSettings>
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" />
@@ -46,6 +48,7 @@
     <ConfigurationSettings>
       <Setting name="DataConnectionString" />
       <Setting name="CloudDriveSize" />
+      <Setting name="SolrMajorVersion" />
     </ConfigurationSettings>
     <LocalResources>
       <LocalStorage name="AzureDriveCache" cleanOnRoleRecycle="false" sizeInMB="4096" />
@@ -73,6 +76,7 @@
       <Setting name="DataConnectionString" />
       <Setting name="CloudDriveSize" />
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" />
+      <Setting name="SolrMajorVersion" />
     </ConfigurationSettings>
     <LocalResources>
       <LocalStorage name="AzureDriveCache" cleanOnRoleRecycle="false" sizeInMB="4096" />

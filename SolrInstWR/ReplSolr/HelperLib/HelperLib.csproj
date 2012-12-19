@@ -49,6 +49,7 @@
     <Compile Include="RoleInfoDataContext.cs" />
     <Compile Include="RoleInfoDataSource.cs" />
     <Compile Include="RoleInfoEntity.cs" />
+    <Compile Include="SolrFileLocations.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

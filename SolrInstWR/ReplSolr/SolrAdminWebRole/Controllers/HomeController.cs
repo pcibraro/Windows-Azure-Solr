@@ -469,7 +469,7 @@ namespace SolrAdminWebRole.Controllers
                 postUrl = String.Format(CultureInfo.InvariantCulture, "{0}update", HelperLib.Util.GetSolrEndpoint(true));
                 webRequest = (HttpWebRequest)WebRequest.Create(postUrl);
                 webRequest.Method = "POST";
-
+                webRequest.ContentType = @"application/xml";
                 using (Stream requestStream = webRequest.GetRequestStream())
                 {
                     byte[] fileContent = Encoding.UTF8.GetBytes("<commit />");
