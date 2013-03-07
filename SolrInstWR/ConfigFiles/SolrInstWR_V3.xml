@@ -12,7 +12,7 @@
            Value="%%Program Files%%\Microsoft SDKs\Windows Azure\PowerShell\Azure\Microsoft.WindowsAzure.Management.dll" Required="yes"></Parameter>
 
     <Parameter Name="SolrLoc" Value="C:\temp"></Parameter>
-    <Parameter Name="SolrDownloadLoc" Value="http://mirror.cc.columbia.edu/pub/software/apache/lucene/solr/3.6.1/apache-solr-3.6.1.zip"></Parameter>
+    <Parameter Name="SolrDownloadLoc" Value="http://archive.apache.org/dist/lucene/solr/3.6.1/apache-solr-3.6.1.zip"></Parameter>
 
     <Parameter Name="AppFolder" Value="C:\temp\DeploySolrOnAzure"></Parameter>
     <Parameter Name="AppName" Value="SolrOnAzure"></Parameter>
