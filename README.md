@@ -24,7 +24,7 @@ You are responsible for and must locate and read the license terms for each of t
 5. Note if you start with a clean machine:  To download your publishSettings file, the enhanced security configuration of IE needs to be disabled. Go to Server Manager -> configure IE ESC -> disable for Administrators.
 
 ## Copy the binaries
-1. Download and extract on your local computer the latest version from http://msopentechstorage.blob.core.windows.net/windows-azure-solr/SolrInstWR-12182012.zip.
+1. Download and extract on your local computer the latest version from http://msopentechrelease.blob.core.windows.net/windows-azure-solr/SolrInstWR.zip.
 
 2. Please make sure that you unblock all the dll's and config files using instructions at http://msdn.microsoft.com/en-us/library/ee890038(VS.100).aspx. 
 
