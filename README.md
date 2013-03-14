@@ -34,10 +34,12 @@ You are responsible for and must locate and read the license terms for each of t
 
 5. Launch a command prompt (cmd.exe) as an administrator and cd to the local folder selected above.
 
+6. Powershell 3.0 is required to run this installer. Please follow the instructions described at http://technet.microsoft.com/en-us/library/hh847837.aspx to install Powershell 3.0. 
+
 ## Run the installer:
     - Inst4WA.exe -XmlConfigPath "<yourpath>/SolrInstWR.xml" -DomainName "<youruniquename>" -Subscription "<yoursubscriptionname>" -Location "<datacenterlocation>"
 
-6. Note that we currently support Solr 3.x as well as 4.x. The names of the SolrInstWR.xml files indicate the Solr version that will be installed using that config file.
+7. Note that we currently support Solr 3.x as well as 4.x. The names of the SolrInstWR.xml files indicate the Solr version that will be installed using that config file.
 
 ## Administering Solr/Lucene
 
