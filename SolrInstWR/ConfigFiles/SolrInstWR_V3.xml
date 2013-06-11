@@ -6,10 +6,7 @@
   <Parameters>
     <Parameter Name="Emulator" Value="false"></Parameter>
 
-    <Parameter Name="AzureDeploymentCmdletsAssemblyPath"
-               Value="%%Program Files%%\Microsoft SDKs\Windows Azure\PowerShell\Azure\Microsoft.WindowsAzure.Management.CloudService.dll" Required="yes"></Parameter>
-    <Parameter Name="AzureMgmtCmdletsAssemblyPath"
-           Value="%%Program Files%%\Microsoft SDKs\Windows Azure\PowerShell\Azure\Microsoft.WindowsAzure.Management.dll" Required="yes"></Parameter>
+    <Parameter Value="%%Program Files%%\Microsoft SDKs\Windows Azure\PowerShell\Azure\Azure.psd1" Name="AzurePowershellManifest"/>
 
     <Parameter Name="SolrLoc" Value="C:\temp"></Parameter>
     <Parameter Name="SolrDownloadLoc" Value="http://archive.apache.org/dist/lucene/solr/3.6.1/apache-solr-3.6.1.zip"></Parameter>
@@ -42,32 +39,41 @@
     <Parameter Name="Location" Value="" Required="yes"></Parameter>
     <Parameter Name="DeploymentOption" Value="Production"></Parameter>
     <Parameter Name="PublishSettingsFilePath" Value="Azure.publishsettings"></Parameter>
-    <Parameter Name="AzureNodeJsSdkPath" Value="%%Program Files%%\Microsoft SDKs\Windows Azure\PowerShell\Azure"></Parameter>
+  
     <Parameter Name="ErrorActionValue" Value="Stop"></Parameter>
     <Parameter Name="Settings" Value="SolrMajorVersion:3"></Parameter>
 
-    <Parameter Name="UploadTimeoutInSeconds" Value="3600"></Parameter>
+    <Parameter Name="ItemType" Value="directory"></Parameter>
+    <Parameter Name="ErrorActionValueContinue" Value="silentlycontinue"></Parameter>
   </Parameters>
   <Steps>
 
     <!--Install Pre-requisites-->
+    <Step Type="Cmdlet" Command="New-Item" Message="Creating temp Directory">
+      <CommandParam Name="Path" ParameterName="SolrLoc" />
+      <CommandParam Name="ItemType" ParameterName="ItemType" />
+      <CommandParam Name="ErrorAction" ParameterName="ErrorActionValueContinue" />
+    </Step>
     <Step Type="Cmdlet" Command="Get-Unzip" Message="Downloading Solr">
       <CommandParam Name="Url" ParameterName="SolrDownloadLoc" />
       <CommandParam Name="UnzipLoc" ParameterName="SolrLoc" />
     </Step>
     <Step Type="Cmdlet" Command="Install-AzureSdkForNodeJs" Message="Installing Windows Azure PowerShell for Node.JS">
-      <CommandParam Name="AzureNodeSdkLoc" ParameterName="AzureNodeJsSdkPath" />
+      <CommandParam Name="AzureNodeSdkLoc" ParameterName="AzurePowershellManifest" />
     </Step>
 
     <!--Load Azure SDK Dll's-->
-    <Step Type="Cmdlet" Command="Add-LoadAssembly" Message="Loading Windows Azure PowerShell for Node.JS">
-      <CommandParam Name="CmdletsAssemblyPath" ParameterName="AzureDeploymentCmdletsAssemblyPath" />
+    <Step Type="Cmdlet" Command="Import-Module" Message="Importing Azure Powershell Modules">
+      <CommandParam Name="Name" ParameterName="AzurePowershellManifest" />
+      <CommandParam Name="NoClobber" ParameterName="" />
     </Step>
-    <Step Type="Cmdlet" Command="Add-LoadAssembly" Message="Loading Windows Azure PowerShell for Node.JS">
-      <CommandParam Name="CmdletsAssemblyPath" ParameterName="AzureMgmtCmdletsAssemblyPath" />
-    </Step>
+
+    <!--Import Publish Settings file-->
     <Step Type="Cmdlet" Command="Import-AzurePublishSettingsFile" Message="Importing Publish settings">
       <CommandParam Name="PublishSettingsFile" ParameterName="PublishSettingsFilePath" />
+    </Step>
+    <Step Type="Cmdlet" Command="Set-AzureSubscription" Message="Configuring default Subscription">
+      <CommandParam Name="DefaultSubscription" ParameterName="Subscription"></CommandParam>
     </Step>
 
     <!--Create Empty App-->
@@ -143,8 +149,6 @@
       <CommandParam Name="StorageAccountName" ParameterName="StorageAccountName" />
       <CommandParam Name="Slot" ParameterName="DeploymentOption" />
       <CommandParam Name="Location" ParameterName="Location" />
-      <CommandParam Name="Subscription" ParameterName="Subscription" />
-      <CommandParam Name="TimeoutSeconds" ParameterName="UploadTimeoutInSeconds"/>
     </Step>
     <Step Type="Cmdlet" Command="Ping-ServiceEndpoints" Message="Verifying the Endpoints.">
       <CommandParam Name="PublishSettingsFile" ParameterName="PublishSettingsFilePath" />
