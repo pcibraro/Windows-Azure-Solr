@@ -41,6 +41,14 @@ namespace HelperLib
                     _configXml = @"v4\solrconfig.xml";
                     _schemaXml = @"v4\schema.xml";
                     break;
+                case "4.4":
+                    _solrConfDir = @"approot\Solr\example\solr\collection1\conf";
+                    _solrLangDir = @"approot\Solr\example\solr\collection1\conf\lang";
+                    _vhdConfDir = @"collection1\conf";
+                    _vhdLangDir = @"collection1\conf\lang";
+                    _configXml = @"v44\solrconfig.xml";
+                    _schemaXml = @"v44\schema.xml";
+                    break;
                 default:
                     break;
             }
