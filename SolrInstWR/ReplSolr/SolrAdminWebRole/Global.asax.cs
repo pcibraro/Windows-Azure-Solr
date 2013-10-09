@@ -20,11 +20,13 @@ See the Apache Version 2.0 License for specific language governing permissions a
 */
 #endregion
 
+using Microsoft.WindowsAzure.ServiceRuntime;
+using SolrAdminWebRole.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
 using System.Web.Routing;
 
 namespace SolrAdminWebRole
@@ -34,28 +36,27 @@ namespace SolrAdminWebRole
 
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
-
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            if (RoleEnvironment.IsAvailable)
+            {
+                var username = RoleEnvironment.GetConfigurationSettingValue("Username");
+                var password = RoleEnvironment.GetConfigurationSettingValue("Password");
 
-            routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+                GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationHandler(username, password));
+            }
+
+            GlobalConfiguration.Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
+            GlobalConfiguration.Configuration.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
             );
 
         }
 
         protected void Application_Start()
         {
-            AreaRegistration.RegisterAllAreas();
-
-            RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
         }
     }

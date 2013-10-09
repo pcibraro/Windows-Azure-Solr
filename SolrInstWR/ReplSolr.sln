@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolrAdminWebRole", "ReplSolr\SolrAdminWebRole\SolrAdminWebRole.csproj", "{9581F5EB-35DC-4D8C-94CF-1ABE2A659F6E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolrMasterHostWorkerRole", "ReplSolr\SolrMasterHostWorkerRole\SolrMasterHostWorkerRole.csproj", "{60FE49E0-A43B-42A2-B26D-2609C3E4BEB7}"
@@ -10,6 +10,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelperLib", "ReplSolr\HelperLib\HelperLib.csproj", "{36A4A901-CDF0-4D0E-B493-97649F1F9D45}"
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "ReplSolr", "ReplSolr\ReplSolr\ReplSolr.ccproj", "{72555D3C-D226-475E-B569-491ABFF2D20F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8B1898A2-D5F9-466E-AE38-50C15BBF38AC}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
