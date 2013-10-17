@@ -11,7 +11,7 @@ namespace SolrProxy.Controllers
 {
     public class SolrController : ApiController
     {
-        public readonly string[] ProtectedResources = new string[] { "dataimport" };
+        //public readonly string[] ProtectedResources = new string[] { "dataimport" };
 
         public async Task<HttpResponseMessage> Get(HttpRequestMessage request)
         {
@@ -20,11 +20,11 @@ namespace SolrProxy.Controllers
             
             var remainingUri = uri.Substring(index + "api/solr/".Length);
 
-            if(ProtectedResources.Any(p => remainingUri.StartsWith(p) &&
-                !User.Identity.IsAuthenticated))
-            {
-                return new HttpResponseMessage(HttpStatusCode.Unauthorized);
-            }
+            //if(ProtectedResources.Any(p => remainingUri.StartsWith(p) &&
+            //    !User.Identity.IsAuthenticated))
+            //{
+            //    return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+            //}
 
             var solrUrl = HelperLib.Util.GetSolrEndpoint(false);
 

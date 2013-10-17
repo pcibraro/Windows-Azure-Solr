@@ -6,8 +6,6 @@
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" value="21000" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" value="20000" />
       <Setting name="DataConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="Username" value="admin" />
-      <Setting name="Password" value="password" />
     </ConfigurationSettings>
     <Certificates></Certificates>
   </Role>

@@ -38,13 +38,13 @@ namespace SolrAdminWebRole
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            if (RoleEnvironment.IsAvailable)
-            {
-                var username = RoleEnvironment.GetConfigurationSettingValue("Username");
-                var password = RoleEnvironment.GetConfigurationSettingValue("Password");
+            //if (RoleEnvironment.IsAvailable)
+            //{
+            //    var username = RoleEnvironment.GetConfigurationSettingValue("Username");
+            //    var password = RoleEnvironment.GetConfigurationSettingValue("Password");
 
-                GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationHandler(username, password));
-            }
+            //    GlobalConfiguration.Configuration.MessageHandlers.Add(new BasicAuthenticationHandler(username, password));
+            //}
 
             GlobalConfiguration.Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
             GlobalConfiguration.Configuration.Routes.MapHttpRoute(
