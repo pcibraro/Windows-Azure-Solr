@@ -53,7 +53,7 @@
     </LocalResources>
     <Endpoints>
       <InternalEndpoint name="SolrMasterServiceEndpoint" protocol="tcp" />
-      <InputEndpoint name="SolrMasterEndpoint" protocol="tcp" port="21000" />
+      <InternalEndpoint name="SolrMasterEndpoint" protocol="tcp" port="21000" />
     </Endpoints>
   </WorkerRole>
   <WorkerRole name="SolrSlaveHostWorkerRole" vmsize="Small">
@@ -81,7 +81,7 @@
     </LocalResources>
     <Endpoints>
       <InternalEndpoint name="SolrSlaveServiceEndpoint" protocol="tcp" />
-      <InputEndpoint name="SolrSlaveEndpoint" protocol="tcp" port="20000" />
+      <InternalEndpoint name="SolrSlaveEndpoint" protocol="tcp" port="20000" />
     </Endpoints>
   </WorkerRole>
 </ServiceDefinition>
