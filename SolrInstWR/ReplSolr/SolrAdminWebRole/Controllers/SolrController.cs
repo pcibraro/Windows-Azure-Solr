@@ -19,8 +19,8 @@ namespace SolrAdminWebRole.Controllers
                 base.HandleUnknownAction(actionName);
             }
 
-            var uri = Request.RawUrl.ToLower();
-            var index = uri.IndexOf("/solr/");
+            var uri = Request.RawUrl;
+            var index = uri.IndexOf("/solr/", StringComparison.InvariantCultureIgnoreCase);
 
             var remainingUri = uri.Substring(index + "/solr/".Length);
 
