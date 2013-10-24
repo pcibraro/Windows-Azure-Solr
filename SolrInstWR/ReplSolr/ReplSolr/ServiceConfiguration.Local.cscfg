@@ -6,6 +6,7 @@
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" value="21000" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" value="20000" />
       <Setting name="DataConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="PollingIntervalInMinutes" value="60"/>
     </ConfigurationSettings>
     <Certificates></Certificates>
   </Role>

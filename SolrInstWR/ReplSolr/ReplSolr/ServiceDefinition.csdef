@@ -27,6 +27,7 @@
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" />
       <Setting name="DataConnectionString" />
+      <Setting name="PollingIntervalInMinutes"/>
     </ConfigurationSettings>
   </WebRole>
   <WorkerRole name="SolrMasterHostWorkerRole" vmsize="Small">

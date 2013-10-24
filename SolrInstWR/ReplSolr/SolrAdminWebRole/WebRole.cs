@@ -26,6 +26,8 @@ using System.Linq;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using System.Net;
+using System.Threading;
 
 namespace SolrAdminWebRole
 {
@@ -37,6 +39,41 @@ namespace SolrAdminWebRole
             // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
 
             return base.OnStart();
+        }
+
+        public override void Run()
+        {
+            while (true)
+            {
+                DataImport("Endpoint1");
+
+                int interval;
+                if(!int.TryParse(RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes"), out interval))
+                {
+                    interval = 60;
+                }
+
+                Thread.Sleep(TimeSpan.FromMinutes(interval));
+            }
+        }
+
+        public static void DataImport(string endpointName)
+        {
+            try
+            {
+                var endpoint = RoleEnvironment.CurrentRoleInstance
+                  .InstanceEndpoints[endpointName];
+                var address = String.Format("{0}://{1}:{2}/solr/dataimport?command=delta-import",
+                    endpoint.Protocol,
+                    endpoint.IPEndpoint.Address,
+                    endpoint.IPEndpoint.Port);
+                var webClient = new WebClient();
+                webClient.DownloadString(address);
+            }
+            catch (Exception)
+            {
+                // intentionally swallow all exceptions here.
+            }
         }
     }
 }
