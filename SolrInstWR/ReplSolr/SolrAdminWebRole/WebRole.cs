@@ -28,6 +28,7 @@ using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using System.Net;
 using System.Threading;
+using System.Diagnostics;
 
 namespace SolrAdminWebRole
 {
@@ -47,10 +48,11 @@ namespace SolrAdminWebRole
             {
                 DataImport("Endpoint1");
 
-                int interval;
-                if(!int.TryParse(RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes"), out interval))
+                int interval = 60;
+
+                if (RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes") != null)
                 {
-                    interval = 60;
+                    int.TryParse(RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes"), out interval);
                 }
 
                 Thread.Sleep(TimeSpan.FromMinutes(interval));
@@ -70,9 +72,9 @@ namespace SolrAdminWebRole
                 var webClient = new WebClient();
                 webClient.DownloadString(address);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // intentionally swallow all exceptions here.
+                Trace.TraceError("Error while trying to import data. Ex {0}", ex.ToString());
             }
         }
     }
