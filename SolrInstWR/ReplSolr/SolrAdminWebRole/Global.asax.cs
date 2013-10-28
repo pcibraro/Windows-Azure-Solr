@@ -20,6 +20,7 @@ See the Apache Version 2.0 License for specific language governing permissions a
 */
 #endregion
 
+using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace SolrAdminWebRole
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            
             filters.Add(new HandleErrorAttribute());
         }
 
@@ -43,12 +45,9 @@ namespace SolrAdminWebRole
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Solr", action = "Index", id = UrlParameter.Optional } // Parameter defaults
-            );
-
+            routes.MapRoute("Default",
+                "solr/{*catchall}",
+                new { controller = "Solr", action = "HandleRequest" });
         }
 
         protected void Application_Start()

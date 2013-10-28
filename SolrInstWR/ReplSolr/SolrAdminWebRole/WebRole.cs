@@ -45,13 +45,14 @@ namespace SolrAdminWebRole
         public override void Run()
         {
             var cs = RoleEnvironment.GetConfigurationSettingValue("DataConnectionString");
-            
+            var credentials = RoleEnvironment.GetConfigurationSettingValue("BasicAuthCredentials");
+
             var logger = new SyncJobsLogger(cs);
             logger.CreateTableIfNotExists();
 
             while (true)
             {
-                DataImport("Endpoint1", logger);
+                DataImport("Endpoint1", logger, credentials);
 
                 int interval = 60;
 
@@ -64,7 +65,7 @@ namespace SolrAdminWebRole
             }
         }
 
-        public static void DataImport(string endpointName, SyncJobsLogger logger)
+        public static void DataImport(string endpointName, SyncJobsLogger logger, string credentials)
         {
             try
             {
@@ -74,7 +75,15 @@ namespace SolrAdminWebRole
                     endpoint.Protocol,
                     endpoint.IPEndpoint.Address,
                     endpoint.IPEndpoint.Port);
+
                 var webClient = new WebClient();
+
+                if (!string.IsNullOrWhiteSpace(credentials))
+                {
+                    var usernameAndPassword = credentials.Split(';');
+                    webClient.Credentials = new NetworkCredential(usernameAndPassword[0], usernameAndPassword[1]);
+                }
+
                 var description = webClient.DownloadString(address);
 
                 logger.SaveJob(true, description);

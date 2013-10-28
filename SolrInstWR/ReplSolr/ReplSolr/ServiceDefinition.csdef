@@ -28,6 +28,7 @@
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" />
       <Setting name="DataConnectionString" />
       <Setting name="PollingIntervalInMinutes"/>
+      <Setting name="BasicAuthCredentials"/>
     </ConfigurationSettings>
   </WebRole>
   <WorkerRole name="SolrMasterHostWorkerRole" vmsize="Small">
