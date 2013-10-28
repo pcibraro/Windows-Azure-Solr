@@ -101,6 +101,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyncJobsLogger.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>

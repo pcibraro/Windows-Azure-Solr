@@ -44,9 +44,14 @@ namespace SolrAdminWebRole
 
         public override void Run()
         {
+            var cs = RoleEnvironment.GetConfigurationSettingValue("DataConnectionString");
+            
+            var logger = new SyncJobsLogger(cs);
+            logger.CreateTableIfNotExists();
+
             while (true)
             {
-                DataImport("Endpoint1");
+                DataImport("Endpoint1", logger);
 
                 int interval = 60;
 
@@ -59,7 +64,7 @@ namespace SolrAdminWebRole
             }
         }
 
-        public static void DataImport(string endpointName)
+        public static void DataImport(string endpointName, SyncJobsLogger logger)
         {
             try
             {
@@ -70,11 +75,13 @@ namespace SolrAdminWebRole
                     endpoint.IPEndpoint.Address,
                     endpoint.IPEndpoint.Port);
                 var webClient = new WebClient();
-                webClient.DownloadString(address);
+                var description = webClient.DownloadString(address);
+
+                logger.SaveJob(true, description);
             }
             catch (Exception ex)
             {
-                Trace.TraceError("Error while trying to import data. Ex {0}", ex.ToString());
+                logger.SaveJob(false, ex.ToString());
             }
         }
     }
