@@ -67,15 +67,16 @@ namespace SolrAdminWebRole
 
         public static void DataImport(string endpointName, SyncJobsLogger logger, string credentials)
         {
+            var endpoint = RoleEnvironment.CurrentRoleInstance
+                  .InstanceEndpoints[endpointName];
+
+            var address = String.Format("{0}://{1}:{2}/solr/dataimport?command=delta-import",
+                endpoint.Protocol,
+                endpoint.PublicIPEndpoint.Address,
+                endpoint.PublicIPEndpoint.Port);
+
             try
             {
-                var endpoint = RoleEnvironment.CurrentRoleInstance
-                  .InstanceEndpoints[endpointName];
-                var address = String.Format("{0}://{1}:{2}/solr/dataimport?command=delta-import",
-                    endpoint.Protocol,
-                    endpoint.IPEndpoint.Address,
-                    endpoint.IPEndpoint.Port);
-
                 var webClient = new WebClient();
 
                 if (!string.IsNullOrWhiteSpace(credentials))
@@ -86,11 +87,11 @@ namespace SolrAdminWebRole
 
                 var description = webClient.DownloadString(address);
 
-                logger.SaveJob(true, description);
+                logger.SaveJob(true, description, address);
             }
             catch (Exception ex)
             {
-                logger.SaveJob(false, ex.ToString());
+                logger.SaveJob(false, ex.ToString(), address);
             }
         }
     }

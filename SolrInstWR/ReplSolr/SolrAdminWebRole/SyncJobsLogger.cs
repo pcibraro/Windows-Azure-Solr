@@ -20,16 +20,12 @@ namespace SolrAdminWebRole
 
         public void CreateTableIfNotExists()
         {
-
             var account = CloudStorageAccount.Parse(this.connectionString);
             account.CreateCloudTableClient().CreateTableIfNotExist(SyncResulsTableName);
-
         }
 
-        public bool SaveJob(bool status, string description)
+        public bool SaveJob(bool status, string description, string url)
         {
-
-
             var context = CloudStorageAccount.Parse(this.connectionString)
                 .CreateCloudTableClient()
                 .GetDataServiceContext();
@@ -38,6 +34,7 @@ namespace SolrAdminWebRole
                 {
                     Date = DateTime.UtcNow,
                     Status = status,
+                    Url = url,
                     PartitionKey = "Delta",
                     Description = description,
                     RowKey = string.Format("{0:d10}", DateTime.MaxValue.Ticks
@@ -56,6 +53,7 @@ namespace SolrAdminWebRole
             public DateTime Date { get; set; }
             public bool Status { get; set; }
             public string Description { get; set; }
+            public string Url { get; set; }
         }
     }
 }

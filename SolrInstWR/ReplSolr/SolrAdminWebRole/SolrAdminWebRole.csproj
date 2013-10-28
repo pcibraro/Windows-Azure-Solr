@@ -127,6 +127,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="startup.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
