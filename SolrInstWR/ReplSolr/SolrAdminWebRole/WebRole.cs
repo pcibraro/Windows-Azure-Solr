@@ -50,6 +50,8 @@ namespace SolrAdminWebRole
             var logger = new SyncJobsLogger(cs);
             logger.CreateTableIfNotExists();
 
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, policy) => true; 
+
             while (true)
             {
                 DataImport("Endpoint1", logger, credentials);
