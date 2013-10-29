@@ -10,10 +10,10 @@ using System.Web.Mvc;
 
 namespace SolrAdminWebRole.Controllers
 {
-    public class SolrController : Controller
+    public class SolrController : AsyncController
     {
         [BasicAuthentication]
-        public ActionResult HandleRequest()
+        public async Task<ActionResult> HandleRequest()
         {
             var uri = Request.RawUrl;
             var index = uri.IndexOf("/solr/", StringComparison.InvariantCultureIgnoreCase);
@@ -30,12 +30,12 @@ namespace SolrAdminWebRole.Controllers
             var httpRequest = (HttpWebRequest)WebRequest.Create(solrUrl + remainingUri);
             try
             {
-                using (var solrResponse = (HttpWebResponse)httpRequest.GetResponse())
+                using (var solrResponse = (HttpWebResponse) await httpRequest.GetResponseAsync())
                 {
                     using (var stream = solrResponse.GetResponseStream())
                     using (var sr = new StreamReader(stream, Encoding.UTF8))
                     {
-                        var content = sr.ReadToEnd();
+                        var content = await sr.ReadToEndAsync();
 
                         return new ContentResult
                         {

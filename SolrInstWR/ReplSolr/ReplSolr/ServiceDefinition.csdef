@@ -3,7 +3,7 @@
   <WebRole name="SolrAdminWebRole" vmsize="Small">
     <Runtime executionContext="elevated">
       <EntryPoint>
-        <NetFxEntryPoint assemblyName="bin\SolrAdminWebRole.dll" targetFrameworkVersion="v4.0" />
+        <NetFxEntryPoint assemblyName="bin\SolrAdminWebRole.dll" targetFrameworkVersion="v4.5" />
       </EntryPoint>
     </Runtime>
     <Startup>
