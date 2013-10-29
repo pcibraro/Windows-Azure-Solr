@@ -21,11 +21,11 @@
     </Sites>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
-      <!--<InputEndpoint name="Endpoint2" protocol="https" port="443" certificate="SSL" />-->
+      <InputEndpoint name="Endpoint2" protocol="https" port="443" certificate="SSL" />
     </Endpoints>
     <Imports></Imports>
     <Certificates>
-      <!--<Certificate name="SSL" storeLocation="LocalMachine" storeName="My" />-->
+      <Certificate name="SSL" storeLocation="LocalMachine" storeName="My" />
     </Certificates>
     <ConfigurationSettings>
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" />

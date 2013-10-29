@@ -10,7 +10,7 @@
       <Setting name="BasicAuthCredentials" value="admin;password"/>
     </ConfigurationSettings>
     <Certificates>
-      <!--<Certificate name="SSL" thumbprint="fd887ecc5c148688b8b49673d383cfa7aed0acc1" thumbprintAlgorithm="sha1" />-->
+      <Certificate name="SSL" thumbprint="E3E3E5F2820653671F3F7C8D0E4A3118AB1C87AD" thumbprintAlgorithm="sha1" />
     </Certificates>
   </Role>
   <Role name="SolrMasterHostWorkerRole">

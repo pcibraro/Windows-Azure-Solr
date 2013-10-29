@@ -70,7 +70,7 @@ namespace SolrAdminWebRole
             var endpoint = RoleEnvironment.CurrentRoleInstance
                   .InstanceEndpoints[endpointName];
 
-            var address = "http://localhost/solr/dataimport?command=delta-import";
+            var address = "https://localhost/solr/dataimport?command=delta-import";
 
             try
             {
