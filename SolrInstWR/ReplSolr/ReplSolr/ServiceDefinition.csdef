@@ -15,19 +15,23 @@
       <Site name="Web">
         <Bindings>
           <Binding name="Endpoint1" endpointName="Endpoint1" />
+          <Binding name="Endpoint2" endpointName="Endpoint2" />
         </Bindings>
       </Site>
     </Sites>
     <Endpoints>
       <InputEndpoint name="Endpoint1" protocol="http" port="80" />
+      <InputEndpoint name="Endpoint2" protocol="https" port="443" certificate="SSL" />
     </Endpoints>
     <Imports></Imports>
-    <Certificates></Certificates>
+    <Certificates>
+      <Certificate name="SSL" storeLocation="LocalMachine" storeName="My" />
+    </Certificates>
     <ConfigurationSettings>
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" />
       <Setting name="DataConnectionString" />
-      <Setting name="PollingIntervalInMinutes"/>
+      <!--<Setting name="PollingIntervalInMinutes"/>-->
       <Setting name="BasicAuthCredentials"/>
     </ConfigurationSettings>
   </WebRole>

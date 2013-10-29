@@ -6,10 +6,12 @@
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" value="21000" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" value="20000" />
       <Setting name="DataConnectionString" value="UseDevelopmentStorage=true" />
-      <Setting name="PollingIntervalInMinutes" value="60"/>
+      <!--<Setting name="PollingIntervalInMinutes" value="60"/>-->
       <Setting name="BasicAuthCredentials" value="admin;password"/>
     </ConfigurationSettings>
-    <Certificates></Certificates>
+    <Certificates>
+      <Certificate name="SSL" thumbprint="fd887ecc5c148688b8b49673d383cfa7aed0acc1" thumbprintAlgorithm="sha1" />
+    </Certificates>
   </Role>
   <Role name="SolrMasterHostWorkerRole">
     <Instances count="1" />

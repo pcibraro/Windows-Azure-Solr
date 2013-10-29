@@ -42,57 +42,57 @@ namespace SolrAdminWebRole
             return base.OnStart();
         }
 
-        public override void Run()
-        {
-            var cs = RoleEnvironment.GetConfigurationSettingValue("DataConnectionString");
-            var credentials = RoleEnvironment.GetConfigurationSettingValue("BasicAuthCredentials");
+        //public override void Run()
+        //{
+        //    var cs = RoleEnvironment.GetConfigurationSettingValue("DataConnectionString");
+        //    var credentials = RoleEnvironment.GetConfigurationSettingValue("BasicAuthCredentials");
 
-            var logger = new SyncJobsLogger(cs);
-            logger.CreateTableIfNotExists();
+        //    var logger = new SyncJobsLogger(cs);
+        //    logger.CreateTableIfNotExists();
 
-            while (true)
-            {
-                DataImport("Endpoint1", logger, credentials);
+        //    while (true)
+        //    {
+        //        DataImport("Endpoint1", logger, credentials);
 
-                int interval = 60;
+        //        int interval = 60;
 
-                if (RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes") != null)
-                {
-                    int.TryParse(RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes"), out interval);
-                }
+        //        if (RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes") != null)
+        //        {
+        //            int.TryParse(RoleEnvironment.GetConfigurationSettingValue("PollingIntervalInMinutes"), out interval);
+        //        }
 
-                Thread.Sleep(TimeSpan.FromMinutes(interval));
-            }
-        }
+        //        Thread.Sleep(TimeSpan.FromMinutes(interval));
+        //    }
+        //}
 
-        public static void DataImport(string endpointName, SyncJobsLogger logger, string credentials)
-        {
-            var endpoint = RoleEnvironment.CurrentRoleInstance
-                  .InstanceEndpoints[endpointName];
+        //public static void DataImport(string endpointName, SyncJobsLogger logger, string credentials)
+        //{
+        //    var endpoint = RoleEnvironment.CurrentRoleInstance
+        //          .InstanceEndpoints[endpointName];
 
-            var address = String.Format("{0}://{1}:{2}/solr/dataimport?command=delta-import",
-                endpoint.Protocol,
-                endpoint.PublicIPEndpoint.Address,
-                endpoint.PublicIPEndpoint.Port);
+        //    var address = String.Format("{0}://{1}:{2}/solr/dataimport?command=delta-import",
+        //        endpoint.Protocol,
+        //        endpoint.PublicIPEndpoint.Address,
+        //        endpoint.PublicIPEndpoint.Port);
 
-            try
-            {
-                var webClient = new WebClient();
+        //    try
+        //    {
+        //        var webClient = new WebClient();
 
-                if (!string.IsNullOrWhiteSpace(credentials))
-                {
-                    var usernameAndPassword = credentials.Split(';');
-                    webClient.Credentials = new NetworkCredential(usernameAndPassword[0], usernameAndPassword[1]);
-                }
+        //        if (!string.IsNullOrWhiteSpace(credentials))
+        //        {
+        //            var usernameAndPassword = credentials.Split(';');
+        //            webClient.Credentials = new NetworkCredential(usernameAndPassword[0], usernameAndPassword[1]);
+        //        }
 
-                var description = webClient.DownloadString(address);
+        //        var description = webClient.DownloadString(address);
 
-                logger.SaveJob(true, description, address);
-            }
-            catch (Exception ex)
-            {
-                logger.SaveJob(false, ex.ToString(), address);
-            }
-        }
+        //        logger.SaveJob(true, description, address);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.SaveJob(false, ex.ToString(), address);
+        //    }
+        //}
     }
 }
