@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -32,13 +33,15 @@ namespace SolrAdminWebRole.Controllers
                 using (var solrResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
                     using (var stream = solrResponse.GetResponseStream())
+                    using (var sr = new StreamReader(stream, Encoding.UTF8))
                     {
+                        var content = sr.ReadToEnd();
 
-                        return new ContentStreamResult
+                        return new ContentResult
                         {
-                            ContentEncoding = solrResponse.ContentEncoding,
-                            ContentType = solrResponse.ContentType,
-                            Response = stream
+                            Content = content,
+                            ContentEncoding = Encoding.UTF8,
+                            ContentType = solrResponse.ContentType
                         };
                     }
                 }
