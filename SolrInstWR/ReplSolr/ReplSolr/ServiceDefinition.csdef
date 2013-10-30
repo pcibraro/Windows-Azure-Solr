@@ -33,6 +33,7 @@
       <Setting name="DataConnectionString" />
       <Setting name="PollingIntervalInMinutes"/>
       <Setting name="BasicAuthCredentials"/>
+      <Setting name="SolrPublicUrl"/>
     </ConfigurationSettings>
   </WebRole>
   <WorkerRole name="SolrMasterHostWorkerRole" vmsize="Small">

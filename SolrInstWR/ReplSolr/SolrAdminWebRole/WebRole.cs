@@ -46,6 +46,7 @@ namespace SolrAdminWebRole
         {
             var cs = RoleEnvironment.GetConfigurationSettingValue("DataConnectionString");
             var credentials = RoleEnvironment.GetConfigurationSettingValue("BasicAuthCredentials");
+            var url = RoleEnvironment.GetConfigurationSettingValue("SolrPublicUrl");
 
             var logger = new SyncJobsLogger(cs);
             logger.CreateTableIfNotExists();
@@ -54,7 +55,7 @@ namespace SolrAdminWebRole
 
             while (true)
             {
-                DataImport("Endpoint1", logger, credentials);
+                DataImport(url, logger, credentials);
 
                 int interval = 60;
 
@@ -67,12 +68,9 @@ namespace SolrAdminWebRole
             }
         }
 
-        public static void DataImport(string endpointName, SyncJobsLogger logger, string credentials)
+        public static void DataImport(string url, SyncJobsLogger logger, string credentials)
         {
-            var endpoint = RoleEnvironment.CurrentRoleInstance
-                  .InstanceEndpoints[endpointName];
-
-            var address = "https://localhost/solr/dataimport?command=delta-import";
+            var address = url + "dataimport?command=delta-import";
 
             try
             {
