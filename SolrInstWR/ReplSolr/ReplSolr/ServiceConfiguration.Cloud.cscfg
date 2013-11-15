@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceConfiguration serviceName="ReplSolr" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*" schemaVersion="2013-03.2.0">
+<ServiceConfiguration serviceName="ReplSolr" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*" schemaVersion="2013-10.2.2">
   <Role name="SolrAdminWebRole">
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" value="21000" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" value="20000" />
       <Setting name="DataConnectionString" value="DefaultEndpointsProtocol=http;AccountName=tempstorage;AccountKey=TEMPKEYRt0tPICSyGPO5uIHfI/zyQignF3Ekx8ZAwctBOtVK8ju5NfMS7NrTJKsn5ItRlY+yq/fnAgz/ScJBwg==" />
-      <Setting name="PollingIntervalInMinutes" value="60"/>
-      <Setting name="BasicAuthCredentials" value="admin;password"/>
-      <Setting name="SolrPublicUrl" value="https://curatedviewsdevsolrdeploy.cloudapp.net/solr/"/>
+      <Setting name="PollingIntervalInMinutes" value="60" />
+      <Setting name="BasicAuthCredentials" value="admin;password" />
+      <Setting name="SolrPublicUrl" value="https://curatedviewsdevsolrdeploy.cloudapp.net/solr/" />
     </ConfigurationSettings>
     <Certificates>
       <Certificate name="SSL" thumbprint="E3E3E5F2820653671F3F7C8D0E4A3118AB1C87AD" thumbprintAlgorithm="sha1" />
@@ -20,7 +20,7 @@
       <Setting name="DataConnectionString" value="DefaultEndpointsProtocol=http;AccountName=tempstorage;AccountKey=TEMPKEYRt0tPICSyGPO5uIHfI/zyQignF3Ekx8ZAwctBOtVK8ju5NfMS7NrTJKsn5ItRlY+yq/fnAgz/ScJBwg==" />
       <Setting name="CloudDriveSize" value="102400" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=tempstorage;AccountKey=TEMPKEYRt0tPICSyGPO5uIHfI/zyQignF3Ekx8ZAwctBOtVK8ju5NfMS7NrTJKsn5ItRlY+yq/fnAgz/ScJBwg==" />
-      <Setting name="SolrMajorVersion" value="4" />
+      <Setting name="SolrMajorVersion" value="4.4" />
     </ConfigurationSettings>
     <Certificates></Certificates>
   </Role>
@@ -31,7 +31,7 @@
       <Setting name="CloudDriveSize" value="102400" />
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" value="21000" />
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=tempstorage;AccountKey=TEMPKEYRt0tPICSyGPO5uIHfI/zyQignF3Ekx8ZAwctBOtVK8ju5NfMS7NrTJKsn5ItRlY+yq/fnAgz/ScJBwg==" />
-      <Setting name="SolrMajorVersion" value="4" />
+      <Setting name="SolrMajorVersion" value="4.4" />
     </ConfigurationSettings>
     <Certificates></Certificates>
   </Role>

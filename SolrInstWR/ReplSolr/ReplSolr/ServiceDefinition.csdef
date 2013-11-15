@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceDefinition name="ReplSolr" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-03.2.0">
+<ServiceDefinition name="ReplSolr" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-10.2.2">
   <WebRole name="SolrAdminWebRole" vmsize="Small">
     <Runtime executionContext="elevated">
       <EntryPoint>
@@ -31,9 +31,9 @@
       <Setting name="SolrMasterHostWorkerRoleExternalEndpointPort" />
       <Setting name="SolrSlaveHostWorkerRoleExternalEndpointPort" />
       <Setting name="DataConnectionString" />
-      <Setting name="PollingIntervalInMinutes"/>
-      <Setting name="BasicAuthCredentials"/>
-      <Setting name="SolrPublicUrl"/>
+      <Setting name="PollingIntervalInMinutes" />
+      <Setting name="BasicAuthCredentials" />
+      <Setting name="SolrPublicUrl" />
     </ConfigurationSettings>
   </WebRole>
   <WorkerRole name="SolrMasterHostWorkerRole" vmsize="Small">
